@@ -3,23 +3,23 @@ import { BlockOpts } from './types'
 export default class Block {
   private transactions
   private prevBlockHash
-  private height
   private timestamp
   private hash
-  constructor({ height, timestamp, transactions, prevBlockHash }: BlockOpts) {
-    this.height = height
+  private transactionsData
+  constructor({ timestamp, transactions, prevBlockHash }: BlockOpts) {
     this.timestamp = timestamp
     this.transactions = transactions
     this.prevBlockHash = prevBlockHash
+    this.transactionsData = JSON.stringify(transactions)
   }
   setHash(hash) {
     this.hash = hash
   }
+  getPreviousBlockHash() {
+    return this.prevBlockHash
+  }
   getHash() {
     return this.hash
-  }
-  getHeight() {
-    return this.height
   }
   getTimestamp() {
     return this.timestamp
@@ -27,7 +27,7 @@ export default class Block {
   getTransactions() {
     return this.transactions
   }
-  getPreviousBlockHash() {
-    return this.prevBlockHash
+  getBlockData() {
+    return this.transactionsData
   }
 }
