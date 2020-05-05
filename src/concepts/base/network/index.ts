@@ -1,16 +1,17 @@
 import { EventEmitter } from 'events'
 
+import { NETWORK_EVENTS } from './constants'
+import { MINER } from '../../actors/node/base/constants'
+
 export default class Network extends EventEmitter {
   private networkName
   private blockchain
   private nodes = []
   private miners = []
-  private blockSubmittions = []
   constructor({ networkName, blockchain }) {
     super()
     this.networkName = networkName
     this.blockchain = blockchain
-    this.blockSubmittions = []
   }
   getNetworkName() {
     return this.networkName
@@ -25,17 +26,14 @@ export default class Network extends EventEmitter {
     return this.miners
   }
   joinNetwork(node) {
-    this.nodes.push(node)
-    if (node.type === 'miner') {
+    if (node.type === MINER) {
       this.miners.push(node)
     }
-  }
-  syncHistory() {
-    return this.blockchain.getChain()
+    this.nodes.push(node)
+    this.emit(NETWORK_EVENTS.NODE_JOINED, node)
   }
   broadcastBlock(block) {
-    this.blockSubmittions.push(block)
-    this.emit('broadcast-block', block)
+    this.emit(NETWORK_EVENTS.BROADCAST_BLOCK, block)
   }
   confirmBlock(node, block) {
     // do stuff with blockSubmittions - sort by timestamp
